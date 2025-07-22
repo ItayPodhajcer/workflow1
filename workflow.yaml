@@ -1,0 +1,32 @@
+name: 'Workflow1'
+description: 'Workflow1 description'
+runner-type: 'cpu'
+inputs:
+  model-repository:
+    description: 'Name of HuggingFace model repository (org/repository).'
+    required: true
+tasks:
+  - name: Clone model repository
+    id: clone-model
+    uses: github.com/itaypodhajcer/task1@main
+    runner-type: cpu
+    args:
+      repository-url: https://huggingface.co/${{ inputs.model-repository }}
+      git-token: ${{ secrets.HF_TOKEN }}
+      clone-path: ./${{ inputs.model-repository }}
+  - name: Convert HuggingFace to GGUF
+    id: hf-to-gguf
+    uses: github.com/itaypodhajcer/task2@main
+    runner-type: cpu
+    args:
+      out-model-type: auto
+      in-model-path: ./${{ inputs.model-repository }}
+      out-model-path: ./${{ inputs.model-repository }}/gguf
+  - name: Quantize GGUF to Q4_K_M
+    id: gguf-quantize
+    uses: github.com/itaypodhajcer/task3@main
+    runner-type: cpu
+    args:
+      quantization-type: Q4_K_M
+      in-model-path: ./${{ inputs.model-repository }}/gguf
+      out-model-path: ./${{ inputs.model-repository }}/quantized

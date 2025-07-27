@@ -6,13 +6,22 @@ inputs:
     description: 'Name of HuggingFace model repository (org/repository).'
     required: true
 tasks:
+  clone-model:
+    name: Clone model repository
+    uses: github.com/itaypodhajcer/task1@main
+    runner-type: cpu
+    args:
+      repository-url: https://huggingface.co/${{ inputs.model-repository }}
+      git-token: ${{ secrets.HF_TOKEN }}
+      clone-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}
   hf-to-gguf:
     name: Convert HuggingFace to GGUF
     uses: github.com/itaypodhajcer/task2@main
     runner-type: cpu
+    depends-on: [ clone-model ]
     args:
       out-model-type: auto
-      in-model-path: /my/test/${{ inputs.model-repository }}
+      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}
       out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/converted.gguf
   gguf-quantize:  
     name: Quantize GGUF to Q4_K_M

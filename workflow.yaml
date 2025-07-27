@@ -21,7 +21,7 @@ tasks:
 #    depends-on: [ clone-model ]
     args:
       out-model-type: auto
-      in-model-path: /mnt/workflow/${{ inputs.model-repository }}
+      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}
       out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/converted.gguf
   gguf-quantize:  
     name: Quantize GGUF to Q4_K_M

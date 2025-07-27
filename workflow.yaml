@@ -30,5 +30,5 @@ tasks:
     depends-on: [ hf-to-gguf ]
     args:
       quantization-type: Q4_K_M
-      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/gguf
-      out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/quantized
+      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/converted.gguf
+      out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/quantized.gguf

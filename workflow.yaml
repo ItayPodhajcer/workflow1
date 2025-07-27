@@ -13,7 +13,7 @@ tasks:
     args:
       repository-url: https://huggingface.co/${{ inputs.model-repository }}
       git-token: ${{ secrets.HF_TOKEN }}
-      clone-path: ./${{ inputs.model-repository }}
+      clone-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}
   hf-to-gguf:
     name: Convert HuggingFace to GGUF
     uses: github.com/itaypodhajcer/task2@main
@@ -21,8 +21,8 @@ tasks:
     depends-on: [ clone-model ]
     args:
       out-model-type: auto
-      in-model-path: ./${{ inputs.model-repository }}
-      out-model-path: ./${{ inputs.model-repository }}/gguf
+      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}
+      out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/gguf
   gguf-quantize:  
     name: Quantize GGUF to Q4_K_M
     uses: github.com/itaypodhajcer/task3@main
@@ -30,5 +30,5 @@ tasks:
     depends-on: [ hf-to-gguf ]
     args:
       quantization-type: Q4_K_M
-      in-model-path: ./${{ inputs.model-repository }}/gguf
-      out-model-path: ./${{ inputs.model-repository }}/quantized
+      in-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/gguf
+      out-model-path: $WORKFLOW_STORAGE/${{ inputs.model-repository }}/quantized

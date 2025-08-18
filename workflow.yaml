@@ -5,6 +5,9 @@ inputs:
   model-repository:
     description: 'Name of HuggingFace model repository (org/repository).'
     required: true
+  target-repository:
+    description: 'Target repository for storing result artifact'
+    required: true
 tasks:
   clone-model:
     name: Clone model repository
@@ -32,3 +35,11 @@ tasks:
       quantization-type: Q4_K_M
       in-model-path: ${{ env.WORKFLOW_STORAGE }}/${{ inputs.model-repository }}/converted.gguf
       out-model-path: ${{ env.WORKFLOW_STORAGE }}/${{ inputs.model-repository }}/quantized.gguf
+  push:
+    name: Push to repository
+    uses: github.com/itaypodhajcer/task4@main
+    runner-type: cpu
+    depends-on: [ gguf-quantize ]
+    args:
+      repository: aaaa/bbbb/${{ inputs.target-repository }}
+      path: ${{ env.WORKFLOW_STORAGE }}/${{ inputs.model-repository }}/quantized.gguf
